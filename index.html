@@ -43,7 +43,7 @@
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 640px;
             margin: 0 auto;
             padding: 24px;
         }
@@ -130,6 +130,21 @@
 
         .status-badge.online .status-dot { background: var(--success); }
         .status-badge.offline .status-dot { background: var(--danger); animation: none; }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+            background: var(--primary-dim);
+        }
 
         @keyframes pulse {
             0%, 100% { opacity: 1; transform: scale(1); }
@@ -548,6 +563,7 @@
                 </div>
             </div>
             <div class="header-right">
+                <a href="trades.html" class="nav-link">Trade History</a>
                 <div class="status-badge online" id="statusBadge">
                     <span class="status-dot"></span>
                     <span id="statusText">Connecting...</span>
@@ -567,7 +583,7 @@
             <!-- Performance Overview -->
             <section class="section">
                 <div class="section-title">Performance Overview</div>
-                <div class="grid-4">
+                <div class="grid-2">
                     <div class="stat-card">
                         <div class="stat-card-header">
                             <span class="stat-card-label">Net Profit</span>
@@ -684,7 +700,7 @@
             <!-- Risk Management & Bot Status -->
             <section class="section">
                 <div class="section-title">Risk Management & Bot Status</div>
-                <div class="grid-3">
+                <div style="display: flex; flex-direction: column; gap: 16px;">
                     <!-- Drawdown -->
                     <div class="detail-card">
                         <div class="detail-card-header">
@@ -810,48 +826,26 @@
                 </div>
             </section>
 
-            <!-- Additional Info -->
+            <!-- Sync Status -->
             <section class="section">
-                <div class="section-title">Additional Information</div>
-                <div class="grid-2">
-                    <!-- Kelly Criterion -->
-                    <div class="detail-card">
-                        <div class="detail-card-header">
-                            <div class="icon" style="background: var(--info-dim); color: var(--info);">K</div>
-                            <h3>Kelly Criterion</h3>
-                            <span class="badge danger" id="kellyBadge" style="margin-left: auto;">Disabled</span>
+                <div class="section-title">Sync Status</div>
+                <div class="detail-card">
+                    <div class="detail-card-body">
+                        <div class="detail-row">
+                            <span class="detail-label">Last Sync</span>
+                            <span class="detail-value" id="lastSync">-</span>
                         </div>
-                        <div class="detail-card-body">
-                            <div class="detail-row">
-                                <span class="detail-label">Status</span>
-                                <span class="detail-value" id="kellyStatus">Disabled</span>
-                            </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Last Sync Time</span>
+                            <span class="detail-value" id="lastSyncTime">-</span>
                         </div>
-                    </div>
-
-                    <!-- Sync Status -->
-                    <div class="detail-card">
-                        <div class="detail-card-header">
-                            <div class="icon" style="background: var(--success-dim); color: var(--success);">SYNC</div>
-                            <h3>Sync Status</h3>
+                        <div class="detail-row">
+                            <span class="detail-label">Risk Paused</span>
+                            <span class="detail-value" id="riskPaused">No</span>
                         </div>
-                        <div class="detail-card-body">
-                            <div class="detail-row">
-                                <span class="detail-label">Last Sync</span>
-                                <span class="detail-value" id="lastSync">-</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Last Sync Time</span>
-                                <span class="detail-value" id="lastSyncTime">-</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Risk Paused</span>
-                                <span class="detail-value" id="riskPaused">No</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Drawdown Paused</span>
-                                <span class="detail-value" id="drawdownPaused">No</span>
-                            </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Drawdown Paused</span>
+                            <span class="detail-value" id="drawdownPaused">No</span>
                         </div>
                     </div>
                 </div>
@@ -913,7 +907,6 @@
             const riskMetrics = data.risk_metrics || {};
             const drawdown = riskMetrics.drawdown || {};
             const martingale = riskMetrics.martingale || {};
-            const kelly = riskMetrics.kelly || {};
             const activeTrade = data.active_trade;
 
             // Online status
@@ -1040,11 +1033,6 @@
 
             document.getElementById('startedAt').textContent = formatDateTime(botStatus.started_at);
             document.getElementById('lastCycle').textContent = formatDateTime(botStatus.last_cycle);
-
-            // Kelly
-            document.getElementById('kellyBadge').textContent = kelly.enabled ? 'Enabled' : 'Disabled';
-            document.getElementById('kellyBadge').className = 'badge ' + (kelly.enabled ? 'success' : 'danger');
-            document.getElementById('kellyStatus').textContent = kelly.enabled ? 'Active' : 'Disabled';
 
             // Sync
             if (lastSync) {

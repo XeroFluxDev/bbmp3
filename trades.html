@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BBMP-X3PY Trade History</title>
+    <style>
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-card: #141414;
+            --bg-card-alt: #1a1a1a;
+            --bg-hover: #1f1f1f;
+            --primary: #dd5f29;
+            --primary-dim: rgba(221, 95, 41, 0.15);
+            --secondary: #e49e65;
+            --success: #22c55e;
+            --success-dim: rgba(34, 197, 94, 0.15);
+            --danger: #ef4444;
+            --danger-dim: rgba(239, 68, 68, 0.15);
+            --warning: #f59e0b;
+            --warning-dim: rgba(245, 158, 11, 0.15);
+            --info: #3b82f6;
+            --info-dim: rgba(59, 130, 246, 0.15);
+            --text: #f5f5f5;
+            --text-secondary: #a3a3a3;
+            --text-dim: #666666;
+            --border: #2a2a2a;
+            --border-light: #333333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 24px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 20px;
+            box-shadow: 0 4px 20px rgba(221, 95, 41, 0.3);
+        }
+
+        .logo-text h1 {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo-text span {
+            font-size: 13px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+            background: var(--primary-dim);
+        }
+
+        .nav-link.active {
+            color: var(--primary);
+            background: var(--primary-dim);
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* Trade Card */
+        .trade-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .trade-card:hover {
+            background: var(--bg-hover);
+            border-color: var(--border-light);
+        }
+
+        .trade-card.win {
+            border-left: 3px solid var(--success);
+        }
+
+        .trade-card.loss {
+            border-left: 3px solid var(--danger);
+        }
+
+        .trade-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .trade-side {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .trade-side.long {
+            background: var(--success-dim);
+            color: var(--success);
+        }
+
+        .trade-side.short {
+            background: var(--danger-dim);
+            color: var(--danger);
+        }
+
+        .trade-pnl {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .trade-pnl.positive { color: var(--success); }
+        .trade-pnl.negative { color: var(--danger); }
+
+        .trade-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .trade-detail {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .trade-detail-label {
+            color: var(--text-dim);
+        }
+
+        .trade-detail-value {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .trade-time {
+            font-size: 11px;
+            color: var(--text-dim);
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Summary Card */
+        .summary-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .summary-item {
+            text-align: center;
+        }
+
+        .summary-value {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .summary-value.positive { color: var(--success); }
+        .summary-value.negative { color: var(--danger); }
+
+        .summary-label {
+            font-size: 12px;
+            color: var(--text-dim);
+            margin-top: 4px;
+        }
+
+        /* Loading */
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 80px;
+            color: var(--text-dim);
+        }
+
+        .loading-spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 16px;
+        }
+
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* No trades */
+        .no-trades {
+            text-align: center;
+            padding: 48px 24px;
+            color: var(--text-dim);
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        .no-trades svg {
+            opacity: 0.3;
+            margin-bottom: 16px;
+        }
+
+        /* Footer */
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            margin-top: 24px;
+            font-size: 13px;
+            color: var(--text-dim);
+        }
+
+        .refresh-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .refresh-btn:hover {
+            background: var(--secondary);
+        }
+
+        .refresh-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .spin { animation: spin 1s linear infinite; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">BB</div>
+                <div class="logo-text">
+                    <h1>BBMP-X3PY</h1>
+                    <span>Trade History</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <a href="index.html" class="nav-link">Dashboard</a>
+                <a href="trades.html" class="nav-link active">Trades</a>
+            </div>
+        </header>
+
+        <!-- Loading State -->
+        <div class="loading" id="loadingState">
+            <div class="loading-spinner"></div>
+            <span>Loading trades...</span>
+        </div>
+
+        <!-- Main Content -->
+        <main id="mainContent" style="display: none;">
+
+            <!-- Summary -->
+            <section class="section">
+                <div class="section-title">Last 10 Trades Summary</div>
+                <div class="summary-card">
+                    <div class="summary-grid">
+                        <div class="summary-item">
+                            <div class="summary-value" id="summaryPnl">$0.00</div>
+                            <div class="summary-label">Total P&L</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-value" id="summaryWinRate">0%</div>
+                            <div class="summary-label">Win Rate</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-value" id="summaryWins">0</div>
+                            <div class="summary-label">Wins</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-value" id="summaryLosses">0</div>
+                            <div class="summary-label">Losses</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Trade List -->
+            <section class="section">
+                <div class="section-title">Recent Trades</div>
+                <div id="tradeList">
+                    <!-- Trades will be inserted here -->
+                </div>
+                <div class="no-trades" id="noTrades" style="display: none;">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="3" y1="9" x2="21" y2="9"></line>
+                        <line x1="9" y1="21" x2="9" y2="9"></line>
+                    </svg>
+                    <div style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">No Trade History</div>
+                    <div>Trade history will appear here after trades are completed</div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <span id="lastUpdate">Last update: -</span>
+            <button class="refresh-btn" id="refreshBtn" onclick="fetchTrades()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="refreshIcon">
+                    <polyline points="23 4 23 10 17 10"></polyline>
+                    <polyline points="1 20 1 14 7 14"></polyline>
+                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                </svg>
+                Refresh
+            </button>
+        </footer>
+    </div>
+
+    <script>
+        const GIST_URL = 'https://gist.githubusercontent.com/XeroFluxDev/da25b7a881a5b7d69bb8125a222a0ffb/raw/bbmp_stats.json';
+
+        async function fetchTrades() {
+            const refreshBtn = document.getElementById('refreshBtn');
+            const refreshIcon = document.getElementById('refreshIcon');
+
+            refreshIcon.classList.add('spin');
+            refreshBtn.disabled = true;
+
+            try {
+                const response = await fetch(GIST_URL + '?t=' + Date.now());
+                if (!response.ok) throw new Error('Failed to fetch');
+
+                const data = await response.json();
+
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+
+                updateUI(data);
+                document.getElementById('lastUpdate').textContent = 'Last update: ' + new Date().toLocaleTimeString();
+
+            } catch (error) {
+                console.error('Error:', error);
+            } finally {
+                refreshIcon.classList.remove('spin');
+                refreshBtn.disabled = false;
+            }
+        }
+
+        function updateUI(data) {
+            const trades = data.recent_trades || [];
+            const tradeList = document.getElementById('tradeList');
+            const noTrades = document.getElementById('noTrades');
+
+            if (trades.length === 0) {
+                tradeList.innerHTML = '';
+                noTrades.style.display = 'block';
+                return;
+            }
+
+            noTrades.style.display = 'none';
+
+            // Calculate summary
+            let totalPnl = 0;
+            let wins = 0;
+            let losses = 0;
+
+            trades.forEach(trade => {
+                const pnl = parseFloat(trade.pnl) || 0;
+                totalPnl += pnl;
+                if (pnl >= 0) wins++;
+                else losses++;
+            });
+
+            const winRate = trades.length > 0 ? (wins / trades.length * 100) : 0;
+
+            // Update summary
+            document.getElementById('summaryPnl').textContent = formatCurrency(totalPnl);
+            document.getElementById('summaryPnl').className = 'summary-value ' + (totalPnl >= 0 ? 'positive' : 'negative');
+            document.getElementById('summaryWinRate').textContent = winRate.toFixed(1) + '%';
+            document.getElementById('summaryWinRate').className = 'summary-value ' + (winRate >= 50 ? 'positive' : 'negative');
+            document.getElementById('summaryWins').textContent = wins;
+            document.getElementById('summaryWins').className = 'summary-value positive';
+            document.getElementById('summaryLosses').textContent = losses;
+            document.getElementById('summaryLosses').className = 'summary-value negative';
+
+            // Render trades (most recent first)
+            const sortedTrades = [...trades].reverse();
+            tradeList.innerHTML = sortedTrades.map(trade => renderTrade(trade)).join('');
+        }
+
+        function renderTrade(trade) {
+            const pnl = parseFloat(trade.pnl) || 0;
+            const isWin = pnl >= 0;
+            const side = (trade.side || 'LONG').toUpperCase();
+
+            return `
+                <div class="trade-card ${isWin ? 'win' : 'loss'}">
+                    <div class="trade-header">
+                        <div class="trade-side ${side.toLowerCase()}">${side}</div>
+                        <div class="trade-pnl ${isWin ? 'positive' : 'negative'}">${formatCurrency(pnl)}</div>
+                    </div>
+                    <div class="trade-details">
+                        <div class="trade-detail">
+                            <span class="trade-detail-label">Symbol</span>
+                            <span class="trade-detail-value">${trade.symbol || 'BTCUSDT'}</span>
+                        </div>
+                        <div class="trade-detail">
+                            <span class="trade-detail-label">Exit Reason</span>
+                            <span class="trade-detail-value">${trade.exit_reason || '-'}</span>
+                        </div>
+                        <div class="trade-detail">
+                            <span class="trade-detail-label">Entry</span>
+                            <span class="trade-detail-value">${formatPrice(trade.entry_price)}</span>
+                        </div>
+                        <div class="trade-detail">
+                            <span class="trade-detail-label">Exit</span>
+                            <span class="trade-detail-value">${formatPrice(trade.exit_price)}</span>
+                        </div>
+                    </div>
+                    <div class="trade-time">
+                        Closed: ${formatDateTime(trade.closed_at || trade.exit_time)}
+                    </div>
+                </div>
+            `;
+        }
+
+        function formatCurrency(value) {
+            const num = parseFloat(value) || 0;
+            return (num >= 0 ? '' : '-') + '$' + Math.abs(num).toFixed(2);
+        }
+
+        function formatPrice(value) {
+            const num = parseFloat(value) || 0;
+            if (num === 0) return '-';
+            return '$' + num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 6 });
+        }
+
+        function formatDateTime(isoString) {
+            if (!isoString) return '-';
+            const date = new Date(isoString);
+            return date.toLocaleString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Initial fetch
+        fetchTrades();
+
+        // Auto-refresh every 60s (only updates when new trade is closed)
+        setInterval(fetchTrades, 60000);
+    </script>
+</body>
+</html>
